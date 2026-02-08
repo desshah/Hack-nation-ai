@@ -96,9 +96,9 @@ class IDPAgent:
             {
                 'facility_id': row['row_id'],
                 'facility_name': row['name'],
-                'region': row['region'],
-                'district': row.get('district', ''),
-                'facility_type': row.get('facility_type', '')
+                'region': row.get('address_stateOrRegion', ''),
+                'district': row.get('address_city', ''),
+                'facility_type': row.get('organization_type', row.get('facilityTypeId', ''))
             }
             for _, row in self.facilities_df.iterrows()
         ]
@@ -253,7 +253,7 @@ class IDPAgent:
         report = {
             'analysis_type': analysis_type,
             'total_facilities': len(self.facilities_df),
-            'regions_analyzed': self.facilities_df['region'].nunique()
+            'regions_analyzed': self.facilities_df['address_stateOrRegion'].nunique()
         }
         
         if analysis_type in ['full', 'deserts']:

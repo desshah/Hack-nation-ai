@@ -4,6 +4,10 @@ Contains API keys, model settings, and file paths
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Project paths
 PROJECT_ROOT = Path(__file__).parent

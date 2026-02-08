@@ -65,14 +65,15 @@ class CapabilityExtractor:
                 source_row_id=facility_id
             )
             
-            # Step 3: Create FacilityWithCapabilities object
+            # Step 3: Create FacilityProfile object with VF-compliant fields
             facility_with_caps = FacilityWithCapabilities(
                 facility_id=str(facility_id),
-                facility_name=result.get('facility_name', facility_row.get('name', '')),
-                region=result.get('region', facility_row.get('address_stateOrRegion', '')),
-                district=facility_row.get('district', ''),
-                ownership=facility_row.get('ownership', ''),
-                facility_type=facility_row.get('organization_type', facility_row.get('facility_type', '')),
+                name=result.get('facility_name', facility_row.get('name', '')),
+                address_stateOrRegion=result.get('region', facility_row.get('address_stateOrRegion', '')),
+                address_city=facility_row.get('address_city', ''),
+                organization_type=facility_row.get('organization_type', ''),
+                facilityTypeId=facility_row.get('facilityTypeId', None),
+                operatorTypeId=facility_row.get('operatorTypeId', None),
                 capabilities=capabilities,
                 raw_data=result['text']
             )

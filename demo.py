@@ -57,7 +57,12 @@ def demo_complete_pipeline():
     print(f"\n📊 Summary:")
     print(f"  • Total Regions Analyzed: {deserts['total_regions']}")
     print(f"  • Medical Deserts Found: {deserts['desert_regions_count']}")
-    print(f"  • Coverage Rate: {((deserts['total_regions'] - deserts['desert_regions_count']) / deserts['total_regions'] * 100):.1f}%")
+    
+    if deserts['total_regions'] > 0:
+        print(f"  • Coverage Rate: {((deserts['total_regions'] - deserts['desert_regions_count']) / deserts['total_regions'] * 100):.1f}%")
+    else:
+        print(f"  • Coverage Rate: N/A (no regions analyzed)")
+    
     
     if deserts['desert_regions']:
         print(f"\n🚨 Critical Medical Deserts:")

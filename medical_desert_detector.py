@@ -40,7 +40,7 @@ class MedicalDesertDetector:
             Region analysis with capability gaps and trust metrics
         """
         # Filter facilities in this region
-        region_facilities = [f for f in facilities if f.region == region]
+        region_facilities = [f for f in facilities if f.address_stateOrRegion == region]
         
         if not region_facilities:
             return {
@@ -74,9 +74,9 @@ class MedicalDesertDetector:
                         capabilities_low_trust.add(norm_cap)
             
             facility_details.append({
-                'name': facility.facility_name,
-                'type': facility.facility_type,
-                'district': facility.district,
+                'name': facility.name,
+                'type': facility.facilityTypeId or facility.organization_type,
+                'district': facility.address_city,
                 'average_trust': facility_score['statistics']['average_trust'],
                 'high_trust_count': facility_score['statistics']['high_trust_count']
             })
@@ -128,8 +128,8 @@ class MedicalDesertDetector:
         """
         # Filter facilities in this district
         district_facilities = [
-            f for f in facilities
-            if f.region == region and f.district == district
+            f for f in facilities 
+            if f.address_stateOrRegion == region and f.address_city == district
         ]
         
         if not district_facilities:
@@ -180,7 +180,7 @@ class MedicalDesertDetector:
         Analyze all regions and identify medical deserts
         """
         # Get unique regions
-        regions = set(f.region for f in facilities)
+        regions = set(f.address_stateOrRegion for f in facilities if f.address_stateOrRegion)
         
         region_analyses = []
         desert_regions = []
@@ -219,8 +219,8 @@ class MedicalDesertDetector:
         # Get unique region-district pairs
         districts = defaultdict(set)
         for f in facilities:
-            if f.district:
-                districts[f.region].add(f.district)
+            if f.address_city and f.address_stateOrRegion:
+                districts[f.address_stateOrRegion].add(f.address_city)
         
         district_analyses = []
         desert_districts = []
@@ -264,7 +264,10 @@ class MedicalDesertDetector:
         regions_without = set()
         
         for facility in facilities:
-            region = facility.region
+            region = facility.address_stateOrRegion
+            
+            if not region:
+                continue
             
             # Check if facility has this capability with high trust
             high_trust_caps = self.trust_scorer.filter_high_trust_capabilities(
