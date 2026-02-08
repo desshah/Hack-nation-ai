@@ -100,9 +100,15 @@ def load_and_preprocess_data(force_reload: bool = False) -> pd.DataFrame:
         df = pd.read_csv(ENRICHED_DATA_FILE)
         
         # Check if it has all necessary fields
-        required_fields = ['row_id', 'facility_context', '_blob_clean']
+        required_fields = ['row_id', 'facility_context']
         if all(field in df.columns for field in required_fields):
             logger.info(f"✅ Loaded {len(df):,} facilities with enriched fields")
+            
+            # Add _blob_clean if missing
+            if '_blob_clean' not in df.columns and '_blob' in df.columns:
+                df['_blob_clean'] = df['_blob'].apply(clean_text_for_llm)
+                logger.info("✅ Added _blob_clean field")
+            
             return df
         else:
             logger.warning("Enriched file missing fields, reprocessing...")

@@ -42,30 +42,37 @@ class CapabilityExtractor:
         extracted_facilities = []
         
         for result in results:
-            facility_id = result['metadata']['facility_id']
+            # Try to get facility_id, fallback to row_id
+            facility_id = result.get('facility_id') or result.get('row_id')
             
             # Get full facility data
-            facility_row = self.facilities_df[
+            matching_rows = self.facilities_df[
                 self.facilities_df['row_id'] == facility_id
-            ].iloc[0]
+            ]
+            
+            if len(matching_rows) == 0:
+                # Facility not found in dataframe, skip
+                continue
+                
+            facility_row = matching_rows.iloc[0]
             
             # Step 2: Extract capabilities
             capabilities = self.extractor.extract_capabilities(
                 facility_context=result['text'],
                 facility_id=facility_id,
-                facility_name=result['metadata']['facility_name'],
-                region=result['metadata']['region'],
+                facility_name=result.get('facility_name', facility_row.get('name', '')),
+                region=result.get('region', facility_row.get('address_stateOrRegion', '')),
                 source_row_id=facility_id
             )
             
             # Step 3: Create FacilityWithCapabilities object
             facility_with_caps = FacilityWithCapabilities(
-                facility_id=facility_id,
-                facility_name=result['metadata']['facility_name'],
-                region=result['metadata']['region'],
+                facility_id=str(facility_id),
+                facility_name=result.get('facility_name', facility_row.get('name', '')),
+                region=result.get('region', facility_row.get('address_stateOrRegion', '')),
                 district=facility_row.get('district', ''),
                 ownership=facility_row.get('ownership', ''),
-                facility_type=facility_row.get('facility_type', ''),
+                facility_type=facility_row.get('organization_type', facility_row.get('facility_type', '')),
                 capabilities=capabilities,
                 raw_data=result['text']
             )
