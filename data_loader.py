@@ -1,9 +1,11 @@
 """
 Data ingestion and preprocessing utilities
 Loads and normalizes the Ghana facility dataset for IDP processing
+VF-compliant: Parses all official VF columns including procedure, equipment, capability, specialties
 """
 import pandas as pd
 import re
+import json
 from typing import Dict, List, Optional
 from pathlib import Path
 import logging
@@ -12,6 +14,33 @@ from config import RAW_DATA_FILE, ENRICHED_DATA_FILE
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def safe_parse_json_list(value) -> List[str]:
+    """
+    Safely parse JSON list strings from VF dataset
+    Handles: '["item1", "item2"]' format
+    """
+    if pd.isna(value) or value is None or value == '':
+        return []
+    
+    if isinstance(value, list):
+        return value
+    
+    try:
+        parsed = json.loads(value)
+        if isinstance(parsed, list):
+            return [str(item) for item in parsed]
+        return [str(parsed)]
+    except (json.JSONDecodeError, TypeError):
+        # Try string split as fallback
+        if isinstance(value, str):
+            # Remove brackets and quotes
+            cleaned = value.strip('[]"\'')
+            if ',' in cleaned:
+                return [item.strip(' "\'"') for item in cleaned.split(',')]
+            return [cleaned] if cleaned else []
+        return []
 
 
 def clean_text_for_llm(text) -> str:
@@ -85,12 +114,13 @@ def create_facility_context(row: pd.Series) -> str:
 def load_and_preprocess_data(force_reload: bool = False) -> pd.DataFrame:
     """
     Load the Ghana facility dataset and perform preprocessing
+    VF-COMPLIANT: Parses all JSON columns (procedure, equipment, capability, specialties)
     
     Args:
         force_reload: If True, reload from raw CSV even if enriched exists
         
     Returns:
-        Preprocessed DataFrame with all necessary fields
+        Preprocessed DataFrame with all VF official fields
     """
     logger.info("Loading Ghana facility dataset...")
     
@@ -108,6 +138,14 @@ def load_and_preprocess_data(force_reload: bool = False) -> pd.DataFrame:
             if '_blob_clean' not in df.columns and '_blob' in df.columns:
                 df['_blob_clean'] = df['_blob'].apply(clean_text_for_llm)
                 logger.info("✅ Added _blob_clean field")
+            
+            # Parse VF JSON columns
+            json_columns = ['procedure', 'equipment', 'capability', 'specialties', 
+                          'phone_numbers', 'websites', 'affiliationTypeIds']
+            for col in json_columns:
+                if col in df.columns and col not in [c for c in df.columns if c.endswith('_parsed')]:
+                    df[f'{col}_parsed'] = df[col].apply(safe_parse_json_list)
+                    logger.info(f"✅ Parsed {col} column")
             
             return df
         else:
