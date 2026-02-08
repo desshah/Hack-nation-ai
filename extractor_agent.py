@@ -280,3 +280,7 @@ if __name__ == "__main__":
         print(f"    Evidence: {cap.evidence[0][:100] if cap.evidence else 'None'}...")
         if cap.flags:
             print(f"    Flags: {cap.flags}")
+
+
+# Alias for backward compatibility
+ExtractionAgent = CapabilityExtractor

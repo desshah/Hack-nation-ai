@@ -37,7 +37,7 @@ class CapabilityExtractor:
             List of FacilityWithCapabilities objects
         """
         # Step 1: Retrieve relevant facilities
-        results = self.retriever.search(query, k=top_k)
+        results = self.retriever.search(query, top_k=top_k)
         
         extracted_facilities = []
         
@@ -141,10 +141,10 @@ class CapabilityExtractor:
 
 if __name__ == "__main__":
     # Example usage
-    from data_loader import load_enriched_data
+    from data_loader import load_and_preprocess_data
     
     print("Loading facilities data...")
-    facilities_df = load_enriched_data()
+    facilities_df = load_and_preprocess_data()
     
     print("Initializing retriever...")
     retriever = Retriever(db_path="vector_db")

@@ -301,12 +301,12 @@ Provide a clear, evidence-based answer that:
 
 if __name__ == "__main__":
     # Test planner agent
-    from data_loader import load_enriched_data
+    from data_loader import load_and_preprocess_data
     from retriever import Retriever
     from config import GROQ_API_KEY
     
     print("Loading facilities data...")
-    facilities_df = load_enriched_data()
+    facilities_df = load_and_preprocess_data()
     
     print("Initializing retriever...")
     retriever = Retriever(db_path="vector_db")

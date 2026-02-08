@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 class Retriever:
     """Retrieves relevant facilities using vector search"""
     
-    def __init__(self):
+    def __init__(self, db_path: str = "vector_db"):
         """Initialize retriever with vector store and embedding generator"""
-        self.vector_store = VectorStore()
+        self.vector_store = VectorStore(db_path=db_path)
         self.embedding_generator = EmbeddingGenerator()
         logger.info("✅ Retriever initialized")
     

@@ -19,14 +19,14 @@ class ExtractedCapability(BaseModel):
         ge=0.0, le=1.0,
         description="Confidence score: 1.0=explicit, 0.7=implied, 0.4=uncertain, 0.2=suspicious"
     )
-    availability: Literal["permanent", "intermittent", "visiting", "planned", "unknown"] = Field(
-        description="Service availability pattern"
+    availability: Literal["available", "limited", "unavailable", "unknown"] = Field(
+        description="Service availability status"
     )
     dependencies: List[str] = Field(
         default_factory=list,
         description="Required capabilities for this service to function properly"
     )
-    flags: List[Literal["suspicious", "incomplete", "contradictory", "unverified", "needs_validation"]] = Field(
+    flags: List[str] = Field(
         default_factory=list,
         description="Quality/anomaly flags for this capability"
     )
@@ -45,12 +45,16 @@ class FacilityProfile(BaseModel):
     
     facility_id: str
     facility_name: str
-    facility_type: str
-    region: Optional[str]
-    city: Optional[str]
-    
+    region: str
+    district: str = ""
+    ownership: str = ""
+    facility_type: str = ""
     capabilities: List[ExtractedCapability]
+    raw_data: str = ""
+    
+    # Optional trust metrics
     trust_score: float = Field(
+        default=0.0,
         ge=0.0, le=1.0,
         description="Overall trust score for this facility"
     )
@@ -113,3 +117,7 @@ class ActionPlan(BaseModel):
         default_factory=list,
         description="Row-level citations"
     )
+
+
+# Alias for backward compatibility
+FacilityWithCapabilities = FacilityProfile

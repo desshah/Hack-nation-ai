@@ -48,6 +48,15 @@ TRUST_THRESHOLD_LOW = 0.5
 CONFIDENCE_EXPLICIT = 1.0
 CONFIDENCE_IMPLIED = 0.7
 CONFIDENCE_UNCERTAIN = 0.4
+
+# Model configuration dictionary for compatibility
+MODEL_CONFIG = {
+    'primary': GROQ_PRIMARY_MODEL,
+    'fast': GROQ_FAST_MODEL,
+    'extraction': GROQ_EXTRACTION_MODEL,
+    'embedding': EMBEDDING_MODEL,
+    'embedding_fallback': EMBEDDING_MODEL_FALLBACK
+}
 CONFIDENCE_SUSPICIOUS = 0.2
 
 # Processing settings

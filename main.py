@@ -6,7 +6,7 @@ import json
 from typing import List, Dict, Optional
 from pathlib import Path
 
-from data_loader import load_enriched_data
+from data_loader import load_and_preprocess_data
 from embeddings import EmbeddingGenerator
 from vector_store import VectorStore
 from retriever import Retriever
@@ -54,7 +54,7 @@ class IDPAgent:
         
         # Step 1: Load data
         print("📊 Loading facilities data...")
-        self.facilities_df = load_enriched_data()
+        self.facilities_df = load_and_preprocess_data()
         print(f"   Loaded {len(self.facilities_df)} facilities")
         
         # Step 2: Initialize embeddings and vector store
