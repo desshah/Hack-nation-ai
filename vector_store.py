@@ -55,14 +55,14 @@ class VectorStore:
         for i, metadata in enumerate(embeddings_data['metadata']):
             record = {
                 'vector': embeddings_data['embeddings'][i].tolist(),
-                'facility_id': metadata['facility_id'],
-                'facility_name': metadata['facility_name'],
-                'region': metadata['region'],
-                'city': metadata['city'],
-                'facility_type': metadata['facility_type'],
-                'row_id': metadata['row_id'],
-                'source_url': metadata['source_url'],
-                'text': metadata['text']
+                'facility_id': str(metadata['facility_id']),
+                'facility_name': str(metadata['facility_name']),
+                'region': str(metadata.get('region', '')),
+                'city': str(metadata.get('city', '')),
+                'facility_type': str(metadata.get('facility_type', '')),
+                'row_id': str(metadata['row_id']),
+                'source_url': str(metadata.get('source_url', '')),
+                'text': str(metadata['text'])
             }
             records.append(record)
         
