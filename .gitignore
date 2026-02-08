@@ -29,6 +29,7 @@ output/
 # Data (keep examples but not large files)
 *.csv
 !example_data.csv
+!vf_ghana_enriched_final.csv
 
 # Models
 *.pkl
