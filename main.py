@@ -97,17 +97,25 @@ class IDPAgent:
                 'facility_id': row['row_id'],
                 'facility_name': row['name'],
                 'region': row.get('address_stateOrRegion', ''),
-                'district': row.get('address_city', ''),
-                'facility_type': row.get('organization_type', row.get('facilityTypeId', ''))
+                'city': row.get('address_city', ''),
+                'facility_type': row.get('organization_type', row.get('facilityTypeId', '')),
+                'row_id': row['row_id'],
+                'source_url': row.get('url', ''),
+                'text': row['facility_context']
             }
             for _, row in self.facilities_df.iterrows()
         ]
         
+        # Prepare embeddings data structure
+        embeddings_data = {
+            'embeddings': embeddings,
+            'metadata': metadatas
+        }
+        
         # Store in vector database
         print("   Storing in vector database...")
         vector_store = VectorStore(db_path=self.vector_db_path)
-        vector_store.add_documents(texts, embeddings, metadatas)
-        vector_store.save()
+        vector_store.create_table(embeddings_data)
         
         print("   ✅ Vector index built successfully")
     
