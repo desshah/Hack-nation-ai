@@ -155,71 +155,15 @@ def main():
         
         # Sample queries
         st.subheader("💡 Sample Queries")
-        
-        st.markdown("**🚨 Emergency & Critical Care:**")
-        emergency_queries = [
+        sample_queries = [
             "Which regions have the worst emergency care?",
-            "Find facilities with ambulance services",
-            "Hospitals with ICU capabilities",
-            "Emergency care coverage in Greater Accra"
-        ]
-        for q in emergency_queries:
-            if st.button(q, key=f"sample_{q}", use_container_width=True):
-                st.session_state.query_input = q
-        
-        st.markdown("**👶 Maternal & Child Health:**")
-        maternal_queries = [
             "Find hospitals with maternity services",
             "Areas lacking child immunization",
-            "Facilities with neonatal care",
-            "C-section delivery capabilities"
-        ]
-        for q in maternal_queries:
-            if st.button(q, key=f"sample_{q}", use_container_width=True):
-                st.session_state.query_input = q
-        
-        st.markdown("**🔬 Diagnostic Services:**")
-        diagnostic_queries = [
             "Regions with good laboratory services",
-            "Facilities with X-ray equipment",
-            "Blood bank availability",
-            "CT scan and MRI facilities"
+            "Medical deserts in Ghana"
         ]
-        for q in diagnostic_queries:
-            if st.button(q, key=f"sample_{q}", use_container_width=True):
-                st.session_state.query_input = q
-        
-        st.markdown("**🏥 General Healthcare:**")
-        general_queries = [
-            "Medical deserts in Ghana",
-            "Private hospitals in Ashanti region",
-            "Pharmacies in rural areas",
-            "Dental clinics availability"
-        ]
-        for q in general_queries:
-            if st.button(q, key=f"sample_{q}", use_container_width=True):
-                st.session_state.query_input = q
-        
-        st.markdown("**🎯 Specific Conditions:**")
-        specific_queries = [
-            "Facilities treating malaria",
-            "HIV/AIDS treatment centers",
-            "Tuberculosis care availability",
-            "Mental health services"
-        ]
-        for q in specific_queries:
-            if st.button(q, key=f"sample_{q}", use_container_width=True):
-                st.session_state.query_input = q
-        
-        st.markdown("**📊 Comparative Analysis:**")
-        comparative_queries = [
-            "Compare healthcare in urban vs rural areas",
-            "Best equipped hospitals in Ghana",
-            "Regions with poorest healthcare access",
-            "Public vs private facility distribution"
-        ]
-        for q in comparative_queries:
-            if st.button(q, key=f"sample_{q}", use_container_width=True):
+        for q in sample_queries:
+            if st.button(q, key=f"sample_{q}"):
                 st.session_state.query_input = q
     
     # Initialize agent
